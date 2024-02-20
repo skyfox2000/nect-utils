@@ -108,6 +108,7 @@ func (p *jsrunStruct) Run(
 		newVm.GlobalObject().Delete("$" + k)
 	}
 
+	utilsTool.Logger.Debugf("errnoN1: %s", finalErr)
 	if finalErr != nil {
 		return nil, finalErr
 	}
@@ -126,6 +127,7 @@ func (p *jsrunStruct) Run(
 			if ok := promise.Result() == nil; ok {
 				pr = nil
 			} else if errStr, ok := p.isError(promise.Result()); ok {
+				utilsTool.Logger.Debugf("errno0: %s", errStr)
 				pr = utils.NewError(3001, errStr)
 			} else {
 				pr = promise.Result().Export()
@@ -135,13 +137,16 @@ func (p *jsrunStruct) Run(
 		<-next
 
 		promiseResult = <-chanResult
+		utilsTool.Logger.Debugf("errnoN2: %s", promiseResult)
 		if errResult, ok := promiseResult.(*utils.CustomError); ok {
+			utilsTool.Logger.Debugf("errnoN3: %s", errResult)
 			return nil, errResult
 		}
 
 		if errResult, ok := promiseResult.(map[string]interface{}); ok {
 			errno, ok1 := errResult["errno"].(int64)
 			msg, ok2 := errResult["msg"].(string)
+			utilsTool.Logger.Debugf("errnoN4: %d, msg: %s", errno, msg)
 			if ok1 && ok2 {
 				err := utils.NewError(int(errno), msg)
 				return nil, err
@@ -149,6 +154,7 @@ func (p *jsrunStruct) Run(
 		}
 
 		// JS不能修改系统数据
+		utilsTool.Logger.Debugf("errnoN5: %s", promiseResult)
 
 		return promiseResult, nil
 	}
