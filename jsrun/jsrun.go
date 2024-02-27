@@ -180,7 +180,6 @@ func (p *jsrunStruct) consoleLog(logLevel string, utilsTool utils.UtilsTool, arg
 			message += jsonStr.(string)
 		}
 	}
-
 	switch logLevel {
 	case "log":
 		utilsTool.Logger.Info(message)
