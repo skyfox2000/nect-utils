@@ -7,6 +7,8 @@ import (
 	"sort"
 	"strings"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 // Underscore 对应的结构体
@@ -294,6 +296,12 @@ func (p *underscore) Padding(num int, length int) string {
 
 	paddedStr := strings.Repeat("0", paddingLength) + numStr
 	return paddedStr
+}
+
+// 返回一个UUID
+func (p *underscore) Uuid() string {
+	guid, _ := uuid.NewUUID()
+	return strings.ReplaceAll(guid.String(), "-", "")
 }
 
 func (p *underscore) CallMethod(methodName string, args ...interface{}) (interface{}, error) {
