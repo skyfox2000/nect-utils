@@ -322,6 +322,8 @@ func getValueByKey(data interface{}, key string) (interface{}, bool) {
 		switch m := data.(type) {
 		case map[string]interface{}:
 			keyValue, exists = m[firstPart]
+		case map[string]string:
+			keyValue, exists = m[firstPart]
 		case *sync.Map:
 			keyValue, exists = m.Load(firstPart)
 		}
