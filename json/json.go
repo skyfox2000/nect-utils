@@ -358,7 +358,7 @@ func getValueByKey(data interface{}, key string) (interface{}, bool) {
 
 // 是否匹配，主键名，主键Key，子属性
 func (p *jsonStruct) IsXPath(key string) (bool, string, string, string) {
-	pattern := `\$([A-Z$]{1}[A-Za-z0-9_]*)[\[\"]{0,2}([\p{Han}A-Za-z0-9._-]*)[\"\]]{0,2}([.A-Za-z0-9_]*)`
+	pattern := `\$([A-Z$]{1}[A-Za-z0-9_]*)[\[\"]{0,2}([\p{Han}\$A-Za-z0-9._-]*)[\"\]]{0,2}([.A-Za-z0-9_]*)`
 	reg := regexp.MustCompile(pattern)
 
 	// 查找第一个匹配项
@@ -373,7 +373,7 @@ func (p *jsonStruct) IsXPath(key string) (bool, string, string, string) {
 }
 
 func (p *jsonStruct) HasXPath(key string) bool {
-	pattern := `\$[A-Z]{1}[A-Za-z0-9_]*\[\"[\p{Han}A-Za-z0-9._-]*\"\]`
+	pattern := `\$([A-Z$]{1}[A-Za-z0-9_]*)[\[\"]{0,2}([\p{Han}\$A-Za-z0-9._-]*)[\"\]]{0,2}([.A-Za-z0-9_]*)`
 	reg := regexp.MustCompile(pattern)
 
 	// 查找第一个匹配项
@@ -382,7 +382,7 @@ func (p *jsonStruct) HasXPath(key string) bool {
 		return true
 	}
 
-	pattern = `\$[A-Z$]{0,1}[A-Za-z0-9.]*`
+	pattern = `\$[A-Z$]{0,1}[\$A-Za-z0-9.]*`
 	reg = regexp.MustCompile(pattern)
 
 	// 查找第一个匹配项
