@@ -475,18 +475,20 @@ func (p *jsonStruct) Log(data interface{}, depth int, arrayLimit int) interface{
 		return string("<nil>")
 	}
 	convertedParams := convertValue(data)
-	message := p.limitJSONDepth(convertedParams, depth, arrayLimit)
+	result := p.limitJSONDepth(convertedParams, depth, arrayLimit)
+
+	bytes, _ := json.MarshalIndent(result, "", "  ")
+	message := json.RawMessage(bytes)
 
 	return string(message)
 }
 
 // limitJSONDepth limits the depth of the JSON output to the specified depth.
 // Arrays will only print the first few elements as specified by arrayLimit.
-func (p *jsonStruct) limitJSONDepth(data interface{}, depth int, arrayLimit int) string {
-	if depth <= 0 {
-		return "..."
+func (p *jsonStruct) limitJSONDepth(data interface{}, depth int, arrayLimit int) interface{} {
+	if depth < -1 {
+		return nil
 	}
-
 	switch v := data.(type) {
 	case []interface{}:
 		limit := arrayLimit
@@ -495,27 +497,22 @@ func (p *jsonStruct) limitJSONDepth(data interface{}, depth int, arrayLimit int)
 		}
 		slice := make([]interface{}, limit)
 		for i := 0; i < limit; i++ {
-			slice[i] = p.limitJSONDepth(v[i], depth-1, arrayLimit)
+			slice[i] = p.limitJSONDepth(v[i], depth, arrayLimit)
 		}
 		if len(v) > limit {
 			slice = append(slice, "...")
 		}
-		bytes, _ := json.MarshalIndent(slice, "", "  ")
-		message := json.RawMessage(bytes)
-		return string(message)
-
+		return slice
 	case map[string]interface{}:
 		resultMap := make(map[string]interface{})
 		for k, val := range v {
 			resultMap[k] = p.limitJSONDepth(val, depth-1, arrayLimit)
 		}
-		bytes, _ := json.MarshalIndent(resultMap, "", "  ")
-		message := json.RawMessage(bytes)
-		return string(message)
-
+		return resultMap
 	default:
-		bytes, _ := json.MarshalIndent(v, "", "  ")
-		message := json.RawMessage(bytes)
-		return string(message)
+		if depth < -1 {
+			return "..."
+		}
+		return v
 	}
 }
