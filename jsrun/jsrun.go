@@ -173,7 +173,7 @@ func (p *jsrunStruct) consoleLog(logLevel string, utilsTool utils.UtilsTool, arg
 		case string:
 			message += t
 		default:
-			jsonStr := json.JSON.Log(t)
+			jsonStr := json.JSON.Log(t, 3, 5)
 			if message != "" {
 				message += " "
 			}
