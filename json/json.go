@@ -486,9 +486,6 @@ func (p *jsonStruct) Log(data interface{}, depth int, arrayLimit int) interface{
 // limitJSONDepth limits the depth of the JSON output to the specified depth.
 // Arrays will only print the first few elements as specified by arrayLimit.
 func (p *jsonStruct) limitJSONDepth(data interface{}, depth int, arrayLimit int) interface{} {
-	if depth < -1 {
-		return nil
-	}
 	switch v := data.(type) {
 	case []interface{}:
 		limit := arrayLimit
@@ -506,13 +503,20 @@ func (p *jsonStruct) limitJSONDepth(data interface{}, depth int, arrayLimit int)
 	case map[string]interface{}:
 		resultMap := make(map[string]interface{})
 		for k, val := range v {
-			resultMap[k] = p.limitJSONDepth(val, depth-1, arrayLimit)
+			if depth > -1 {
+				resultMap[k] = p.limitJSONDepth(val, depth-1, arrayLimit)
+			} else {
+				switch val.(type) {
+				case []interface{}:
+				case map[string]interface{}:
+					return "..."
+				default:
+					return data
+				}
+			}
 		}
 		return resultMap
 	default:
-		if depth < -1 {
-			return "..."
-		}
 		return v
 	}
 }
