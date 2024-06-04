@@ -474,8 +474,8 @@ func (p *jsonStruct) Log(data interface{}, depth int, arrayLimit int) interface{
 	if data == nil {
 		return string("<nil>")
 	}
-	convertedParams := convertValue(data)
-	result := p.limitJSONDepth(convertedParams, depth, arrayLimit)
+	// convertedParams := convertValue(data)
+	result := p.limitJSONDepth(data, depth, arrayLimit)
 
 	bytes, _ := json.MarshalIndent(result, "", "  ")
 	message := json.RawMessage(bytes)
@@ -488,6 +488,19 @@ func (p *jsonStruct) Log(data interface{}, depth int, arrayLimit int) interface{
 func (p *jsonStruct) limitJSONDepth(data interface{}, depth int, arrayLimit int) interface{} {
 	switch v := data.(type) {
 	case []interface{}:
+		limit := arrayLimit
+		if len(v) < arrayLimit {
+			limit = len(v)
+		}
+		slice := make([]interface{}, limit)
+		for i := 0; i < limit; i++ {
+			slice[i] = p.limitJSONDepth(v[i], depth, arrayLimit)
+		}
+		if len(v) > limit {
+			slice = append(slice, "...")
+		}
+		return slice
+	case []map[string]interface{}:
 		limit := arrayLimit
 		if len(v) < arrayLimit {
 			limit = len(v)

@@ -126,7 +126,7 @@ func (p *jsrunStruct) Run(
 			if ok := promise.Result() == nil; ok {
 				pr = nil
 			} else if errStr, ok := p.isError(promise.Result()); ok {
-				pr = utils.NewError(3001, errStr)
+				pr = utils.NewError(3001, "["+utilsTool.Name+"] "+errStr)
 			} else {
 				pr = promise.Result().Export()
 			}
@@ -143,7 +143,7 @@ func (p *jsrunStruct) Run(
 			errno, ok1 := errResult["errno"].(int64)
 			msg, ok2 := errResult["msg"].(string)
 			if ok1 && ok2 {
-				err := utils.NewError(int(errno), msg)
+				err := utils.NewError(int(errno), "["+utilsTool.Name+"] "+msg)
 				return nil, err
 			}
 		}
