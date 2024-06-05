@@ -410,25 +410,30 @@ func (p *jsonStruct) Stringify(data interface{}) string {
 }
 
 func (p *jsonStruct) Parse(data interface{}) (interface{}, bool) {
-	if !underscore.Underscore.IsString(data) {
-		return data, false
+	// 检查data是否为[]byte类型
+	if dataBytes, ok := data.([]byte); ok {
+		var result interface{}
+		err := json.Unmarshal(dataBytes, &result)
+		if err != nil {
+			// 处理解析失败的情况
+			return err.Error(), false
+		}
+		return result, true
 	}
 
-	jsonStr := data.(string)
-	var result interface{}
-	err := json.Unmarshal([]byte(jsonStr), &result)
-	// var result *simdjson.ParsedJson
-	// result, err := simdjson.Parse([]byte(jsonStr), nil)
-	if err != nil {
-		// 处理解析失败的情况
-		return err.Error(), false
+	// 检查data是否为string类型
+	if dataStr, ok := data.(string); ok {
+		var result interface{}
+		err := json.Unmarshal([]byte(dataStr), &result)
+		if err != nil {
+			// 处理解析失败的情况
+			return err.Error(), false
+		}
+		return result, true
 	}
 
-	// if reflect.TypeOf(result) == reflect.TypeOf("") {
-	// 	json.Unmarshal([]byte(result.(string)), &result)
-	// 	return result, true
-	// }
-	return result, true
+	// 如果data既不是string也不是[]byte类型，返回原始数据和false
+	return data, false
 }
 
 func (p *jsonStruct) Clone(data interface{}) interface{} {
