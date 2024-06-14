@@ -184,7 +184,7 @@ func (p *jsrunStruct) consoleLog(logLevel string, utilsTool utils.UtilsTool, arg
 	case "log":
 		utilsTool.Logger.Info(message)
 	case "info":
-		utilsTool.Logger.Info(message)
+		utilsTool.Logger.InfoNormal(message)
 	case "warn":
 		utilsTool.Logger.Warn(message)
 	case "debug":

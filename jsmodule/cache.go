@@ -19,6 +19,15 @@ var cacheModule = map[string]interface{}{
 	"mset": func(data map[string]interface{}, exp *int) {
 		cache.Cache.MSet(data, exp)
 	},
+	"delete": func(key string, data interface{}, exp *int) {
+		cache.Cache.Delete(key)
+	},
+	"mdelete": func(keys []string) {
+		cache.Cache.MDelete(keys)
+	},
+	"deleteKeys": func(filter *string) {
+		cache.Cache.DeleteKeys(filter)
+	},
 	"keys": func(filter *string) []string {
 		return cache.Cache.Keys(filter)
 	},

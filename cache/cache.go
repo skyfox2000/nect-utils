@@ -88,6 +88,21 @@ func (p *cacheStruct) MSet(data map[string]interface{}, exp *int) {
 	}
 }
 
+func (p *cacheStruct) Delete(key string) {
+	cacheStorage.Delete(key)
+}
+
+func (p *cacheStruct) MDelete(keys []string) {
+	for _, v := range keys {
+		p.Delete(v)
+	}
+}
+
+func (p *cacheStruct) DeleteKeys(filter *string) {
+	keys := p.Keys(filter)
+	p.MDelete(keys)
+}
+
 // 脚本, 数据
 func (p *cacheStruct) HashKey(jscode string, data map[string]interface{}) string {
 	jscode = strings.TrimSpace(jscode)
