@@ -39,6 +39,29 @@ var dayjsModule = map[string]interface{}{
 	"subtract": func(datetime interface{}, duration int, period string) (string, error) {
 		return calculateTime(datetime, duration, period, -1)
 	},
+	"diff": func(datetime1 interface{}, datetime2 interface{}, period string) (int, error) {
+		goTime1, _, err := convertToGoTime(datetime1)
+		if err != nil {
+			return 0, err
+		}
+
+		goTime2, _, err := convertToGoTime(datetime2)
+		if err != nil {
+			return 0, err
+		}
+
+		switch period {
+		case "seconds":
+			return int(goTime1.Sub(goTime2).Seconds()), nil
+		case "minutes":
+			return int(goTime1.Sub(goTime2).Minutes()), nil
+		case "hours":
+			return int(goTime1.Sub(goTime2).Hours()), nil
+		case "days":
+			return int(goTime1.Sub(goTime2).Hours() / 24), nil
+		}
+		return 0, errors.New("unsupported period")
+	},
 }
 
 func init() {
