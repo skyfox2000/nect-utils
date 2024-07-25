@@ -84,6 +84,22 @@ func (p *underscore) IsObject(value interface{}) bool {
 	}
 }
 
+func (p *underscore) IsMap(value interface{}) bool {
+	switch reflect.TypeOf(value).Kind() {
+	case reflect.Map:
+		return true
+	}
+	return false
+}
+
+func (p *underscore) IsArray(value interface{}) bool {
+	switch reflect.TypeOf(value).Kind() {
+	case reflect.Slice, reflect.Array:
+		return true
+	}
+	return false
+}
+
 // Uniq 返回去重后的数组
 func (p *underscore) Uniq(arr []interface{}) []interface{} {
 	set := make(map[interface{}]struct{})
