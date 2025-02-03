@@ -142,8 +142,13 @@ func (p *jsrunStruct) Run(
 		if errResult, ok := promiseResult.(map[string]interface{}); ok {
 			errno, ok1 := errResult["errno"].(int64)
 			msg, ok2 := errResult["msg"].(string)
+			detail := errResult["detail"]
 			if ok1 && ok2 {
-				err := utils.NewError(int(errno), "["+utilsTool.Name+"] "+msg)
+				err := utils.CustomError{
+					errno: int(errno), 
+					msg: "["+utilsTool.Name+"] "+msg, 
+					detail:detail
+				}
 				return nil, err
 			}
 		}
