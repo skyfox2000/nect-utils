@@ -145,9 +145,9 @@ func (p *jsrunStruct) Run(
 			detail := errResult["detail"]
 			if ok1 && ok2 {
 				err := utils.CustomError{
-					errno: int(errno), 
-					msg: "["+utilsTool.Name+"] "+msg, 
-					detail:detail
+					Errno: int(errno), 
+					Msg: "["+utilsTool.Name+"] "+msg, 
+					Data: detail,
 				}
 				return nil, err
 			}
